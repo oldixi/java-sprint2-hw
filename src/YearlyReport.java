@@ -2,7 +2,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class YearlyReport {
-    public static int MONTHS_PER_YEAR = 3;
     ReadFile file;
     String year;
     Integer monthCont = 0;
@@ -14,8 +13,7 @@ public class YearlyReport {
     }
 
     public ArrayList<YearData> parseYearData() {
-        List<String> yearList = new ArrayList();
-        yearList = file.readFileContents();
+        List<String> yearList = file.readFileContents();
         String[] lineContents;
         ArrayList<YearData> yearDataList = new ArrayList();
         for (int i = 1; i < yearList.size(); i++) {
@@ -54,11 +52,11 @@ public class YearlyReport {
         Integer monthNum;
         System.out.println("\nОтчет за " + year + ".");
         for (int i = 1; i <= monthCont; i++) {
-            System.out.println("Прибыль за " + UsefulTools.getMonthName(i) +
-                    ": " + UsefulTools.moneyFormat(sumOfMonth(false, "0"+i) - sumOfMonth(true, "0"+i)) + ".");
+            System.out.println("Прибыль за " + FormatForReports.getMonthName(i) +
+                    ": " + FormatForReports.moneyFormat(sumOfMonth(false, "0"+i) - sumOfMonth(true, "0"+i)) + ".");
         }
-        System.out.println("Средний доход за отчетные месяцы: " + UsefulTools.moneyFormat(avgOfYear(false)) + ".");
-        System.out.println("Средний расход за отчетные месяцы: " + UsefulTools.moneyFormat(avgOfYear(true)) + ".");
+        System.out.println("Средний доход за отчетные месяцы: " + FormatForReports.moneyFormat(avgOfYear(false)) + ".");
+        System.out.println("Средний расход за отчетные месяцы: " + FormatForReports.moneyFormat(avgOfYear(true)) + ".");
     }
 
 }

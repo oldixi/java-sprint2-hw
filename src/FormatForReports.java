@@ -1,9 +1,9 @@
 import java.text.DecimalFormat;
 
-public class UsefulTools {
+public class FormatForReports {
     static String DEC_FORMAT = "#0.00";
 
-    UsefulTools() {
+    FormatForReports() {
     }
 
     public static String getMonthName(int monthNum) {
@@ -12,7 +12,6 @@ public class UsefulTools {
     }
 
     public static String moneyFormat(double money) {
-        String moneyFormated = new DecimalFormat(DEC_FORMAT).format(money);
-        return moneyFormated;
+        return new DecimalFormat(DEC_FORMAT).format(money);
     }
 }

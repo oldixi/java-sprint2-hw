@@ -1,3 +1,6 @@
+import java.io.File;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 class Main {
@@ -7,20 +10,23 @@ class Main {
     static int SHOW_MONTH_REPORTS = 4;
     static int SHOW_YEAR_REPORT = 5;
     static int EXIT = 0;
+    static String DIRECTORY = "resources";
 
     public static void main(String[] args) throws Error {
         Scanner scanner = new Scanner(System.in);
-        ReadFile readFile01 = new ReadFile("resources/m.202101.csv");
-        ReadFile readFile02 = new ReadFile("resources/m.202102.csv");
-        ReadFile readFile03 = new ReadFile("resources/m.202103.csv");
-        ReadFile readFile2021 = new ReadFile("resources/y.2021.csv");
+        boolean isReadMonthlyReports = false;
+        boolean isReadYearlyReports = false;
 
-        MonthlyReport monthlyReport01 = new MonthlyReport(readFile01);
-        MonthlyReport monthlyReport02 = new MonthlyReport(readFile02);
-        MonthlyReport monthlyReport03 = new MonthlyReport(readFile03);
-        YearlyReport yearReport2021 = new YearlyReport(readFile2021);
-
+        ArrayList<MonthlyReport> listOfMonthlyReport = new ArrayList<>();
+        ArrayList<YearlyReport> listOfYearlyReport = new ArrayList<>();
         ChechReps chechReps = new ChechReps();
+
+        ReadFile readFileFolder = new ReadFile();
+        File folder = new File(DIRECTORY);
+        List<String> listOfFilesInFolder = new ArrayList<>();
+        listOfFilesInFolder = readFileFolder.listFilesForFolder(folder);
+
+        beforeReadReports(listOfFilesInFolder, listOfMonthlyReport, listOfYearlyReport);
 
         while (true) {
             printMenu();
@@ -39,35 +45,37 @@ class Main {
             }
 
             if (command == READ_MONTH_REPORTS) {
-                monthlyReport01.monthDataArrayList = monthlyReport01.parseMonthData();
-                monthlyReport02.monthDataArrayList = monthlyReport02.parseMonthData();
-                monthlyReport03.monthDataArrayList = monthlyReport03.parseMonthData();
+                for (MonthlyReport monthlyReportFromArray : listOfMonthlyReport) {
+                    monthlyReportFromArray.monthDataArrayList = monthlyReportFromArray.parseMonthData();
+                }
+                isReadMonthlyReports = true;
                 System.out.println("Операция считывания месячных отчетов завершена.");
             } else if (command == READ_YEAR_REPORT) {
-                yearReport2021.yearDataArrayList = yearReport2021.parseYearData();
-                System.out.println("Операция считывания годового отчета завершена.");
-            } else if (command == CHECK_REPORTS) {
-                if (!monthlyReport01.isRead || !monthlyReport02.isRead || !monthlyReport03.isRead ||
-                    !yearReport2021.isRead) {
-                    System.out.println("Операция не может быть выполнена. Сначала необходимо считать файлы с годовым и месячными отчетами.");
-                } else if (chechReps.checkReps(monthlyReport01, yearReport2021, "01") *
-                           chechReps.checkReps(monthlyReport02, yearReport2021, "02") *
-                           chechReps.checkReps(monthlyReport03, yearReport2021, "03") == 1) {
-                    System.out.println("Операция сверки завершилась успешно.");
+                for (YearlyReport yearlyReportFromArray : listOfYearlyReport) {
+                    yearlyReportFromArray.yearDataArrayList = yearlyReportFromArray.parseYearData();
                 }
+                isReadYearlyReports = true;
+                System.out.println("Операция считывания годовых отчетов завершена.");
+            } else if (command == CHECK_REPORTS) {
+                if (!isReadMonthlyReports || !isReadYearlyReports) {
+                    System.out.println("Операция не может быть выполнена. Сначала необходимо считать файлы с годовыми и месячными отчетами.");
+                }
+                chechReps.checkReps(listOfMonthlyReport, listOfYearlyReport);
             } else if (command == SHOW_MONTH_REPORTS) {
-                if (!monthlyReport01.isRead || !monthlyReport02.isRead || !monthlyReport03.isRead) {
+                if (!isReadMonthlyReports) {
                     System.out.println("Операция не может быть выполнена. Сначала необходимо считать файлы с месячными отчетами.");
                 } else {
-                    monthlyReport01.showMonthRep("01");
-                    monthlyReport02.showMonthRep("02");
-                    monthlyReport03.showMonthRep("03");
+                    for (MonthlyReport monthlyReportFromArray : listOfMonthlyReport) {
+                        monthlyReportFromArray.showMonthRep(monthlyReportFromArray.month);
+                    }
                 }
             } else if (command == SHOW_YEAR_REPORT) {
-                if (!yearReport2021.isRead) {
+                if (!isReadYearlyReports) {
                     System.out.println("Операция не может быть выполнена. Сначала необходимо считать файл с годовым отчетом.");
                 } else {
-                    yearReport2021.showYearRep("2021");
+                    for (YearlyReport yearlyReportFromArray : listOfYearlyReport) {
+                        yearlyReportFromArray.showYearRep(yearlyReportFromArray.year);
+                    }
                 }
             } else if (command == EXIT) {
                 System.out.println("Выход");
@@ -85,5 +93,20 @@ class Main {
                 "5 - Вывести информацию о годовом отчёте\n" +
                 "0 - Выход \n");
     }
+
+    static void beforeReadReports(List<String> listOfFilesInFolder, ArrayList<MonthlyReport> listOfMonthlyReport, ArrayList<YearlyReport> listOfYearlyReport) {
+        for (String fileName : listOfFilesInFolder) {
+            if (fileName.substring(0, 1).toLowerCase().equals("m")) {
+                ReadFile readFile = new ReadFile(DIRECTORY + "/" + fileName);
+                MonthlyReport monthlyReport = new MonthlyReport(readFile);
+                listOfMonthlyReport.add(monthlyReport);
+            } else if (fileName.substring(0, 1).toLowerCase().equals("y")) {
+                ReadFile readFile = new ReadFile(DIRECTORY + "/" + fileName);
+                YearlyReport yearlyReport = new YearlyReport(readFile);
+                listOfYearlyReport.add(yearlyReport);
+            }
+        }
+    }
+
 }
 

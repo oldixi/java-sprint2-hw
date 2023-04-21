@@ -4,11 +4,13 @@ import java.util.ArrayList;
 public class YearlyReport {
     public static int MONTHS_PER_YEAR = 3;
     ReadFile file;
-    boolean isRead = false;
+    String year;
+    Integer monthCont = 0;
     ArrayList<YearData> yearDataArrayList = new ArrayList<>();
 
     YearlyReport(ReadFile file) {
         this.file = file;
+        year = file.path.substring(file.path.lastIndexOf('y') + 2, file.path.lastIndexOf('y') + 6);
     }
 
     public ArrayList<YearData> parseYearData() {
@@ -24,7 +26,7 @@ public class YearlyReport {
             yearData.is_expense = Boolean.parseBoolean(lineContents[2]);
             yearDataList.add(yearData);
         }
-        isRead = true;
+        monthCont = yearList.size() / 2;
         return yearDataList;
     }
 
@@ -45,14 +47,13 @@ public class YearlyReport {
                 sumOfYear += yearData.amount;
             }
         }
-        return sumOfYear / MONTHS_PER_YEAR;
+        return sumOfYear / monthCont;
     }
 
     public void showYearRep(String year) {
         Integer monthNum;
-
-        System.out.println("Отчет за " + year + ".");
-        for (int i = 1; i <= MONTHS_PER_YEAR; i++) {
+        System.out.println("\nОтчет за " + year + ".");
+        for (int i = 1; i <= monthCont; i++) {
             System.out.println("Прибыль за " + UsefulTools.getMonthName(i) +
                     ": " + UsefulTools.moneyFormat(sumOfMonth(false, "0"+i) - sumOfMonth(true, "0"+i)) + ".");
         }

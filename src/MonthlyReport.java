@@ -3,11 +3,14 @@ import java.util.ArrayList;
 
 public class MonthlyReport {
     ReadFile file;
-    boolean isRead = false;
+    String month;
+    String year;
     ArrayList<MonthData> monthDataArrayList = new ArrayList<>();
 
     MonthlyReport(ReadFile file) {
         this.file = file;
+        year = file.path.substring(file.path.lastIndexOf('m') + 2, file.path.lastIndexOf('m') + 6);
+        month = file.path.substring(file.path.lastIndexOf('m') + 6, file.path.lastIndexOf('m') + 8);
     }
 
     public ArrayList<MonthData> parseMonthData() {
@@ -24,7 +27,6 @@ public class MonthlyReport {
             monthData.sum_of_one = Double.parseDouble(lineContents[3]);
             monthDataList.add(monthData);
         }
-        isRead = true;
         return monthDataList;
     }
 
@@ -60,13 +62,11 @@ public class MonthlyReport {
         MonthData monthDataMaxExpense = new MonthData();
         monthDataMaxIncome = maxMonth(false);
         monthDataMaxExpense = maxMonth(true);
-
         Integer monthNum = Integer.parseInt(month);
-
-        System.out.println("Отчет за " + UsefulTools.getMonthName(monthNum) + ".");
+        System.out.println("\nОтчет за " + UsefulTools.getMonthName(monthNum) + " " + year + " года.");
         System.out.println("Самый прибыльный товар: " + monthDataMaxIncome.item_name +
                            " на сумму " + UsefulTools.moneyFormat(monthDataMaxIncome.sum_of_one * monthDataMaxIncome.quantity) + ".");
-        System.out.println("Самая большая трата за: " + monthDataMaxExpense.item_name +
+        System.out.println("Самая большая трата: " + monthDataMaxExpense.item_name +
                 " на сумму " + UsefulTools.moneyFormat(monthDataMaxExpense.sum_of_one * monthDataMaxExpense.quantity) + ".");
     }
 

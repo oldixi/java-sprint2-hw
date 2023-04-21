@@ -46,13 +46,13 @@ class Main {
 
             if (command == READ_MONTH_REPORTS) {
                 for (MonthlyReport monthlyReportFromArray : listOfMonthlyReport) {
-                    monthlyReportFromArray.monthDataArrayList = monthlyReportFromArray.parseMonthData();
+                    monthlyReportFromArray.monthlyDataArrayList = monthlyReportFromArray.parseMonthData();
                 }
                 isReadMonthlyReports = true;
                 System.out.println("Операция считывания месячных отчетов завершена.");
             } else if (command == READ_YEAR_REPORT) {
                 for (YearlyReport yearlyReportFromArray : listOfYearlyReport) {
-                    yearlyReportFromArray.yearDataArrayList = yearlyReportFromArray.parseYearData();
+                    yearlyReportFromArray.yearlyDataArrayList = yearlyReportFromArray.parseYearData();
                 }
                 isReadYearlyReports = true;
                 System.out.println("Операция считывания годовых отчетов завершена.");

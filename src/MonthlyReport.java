@@ -5,7 +5,7 @@ public class MonthlyReport {
     ReadFile file;
     String month;
     String year;
-    ArrayList<MonthData> monthDataArrayList = new ArrayList<>();
+    ArrayList<MonthlyData> monthlyDataArrayList = new ArrayList<>();
 
     MonthlyReport(ReadFile file) {
         this.file = file;
@@ -13,43 +13,43 @@ public class MonthlyReport {
         month = file.path.substring(file.path.lastIndexOf('m') + 6, file.path.lastIndexOf('m') + 8);
     }
 
-    public ArrayList<MonthData> parseMonthData() {
+    public ArrayList<MonthlyData> parseMonthData() {
         List<String> monthList = file.readFileContents();
         String[] lineContents;
-        ArrayList<MonthData> monthDataList = new ArrayList();
+        ArrayList<MonthlyData> monthlyDataList = new ArrayList();
         for (int i = 1; i < monthList.size(); i++) {
-            MonthData monthData = new MonthData();
+            MonthlyData monthlyData = new MonthlyData();
             lineContents = monthList.get(i).split(",");
-            monthData.item_name = lineContents[0];
-            monthData.is_expense = Boolean.parseBoolean(lineContents[1]);
-            monthData.quantity = Integer.parseInt(lineContents[2]);
-            monthData.sum_of_one = Double.parseDouble(lineContents[3]);
-            monthDataList.add(monthData);
+            monthlyData.item_name = lineContents[0];
+            monthlyData.is_expense = Boolean.parseBoolean(lineContents[1]);
+            monthlyData.quantity = Integer.parseInt(lineContents[2]);
+            monthlyData.sum_of_one = Double.parseDouble(lineContents[3]);
+            monthlyDataList.add(monthlyData);
         }
-        return monthDataList;
+        return monthlyDataList;
     }
 
     public double sumOfMonth(boolean is_expense) {
         double sumOfMonth = 0;
-        for (MonthData monthData : monthDataArrayList) {
-            if (monthData.is_expense == is_expense) {
-                sumOfMonth += monthData.sum_of_one * monthData.quantity;
+        for (MonthlyData monthlyData : monthlyDataArrayList) {
+            if (monthlyData.is_expense == is_expense) {
+                sumOfMonth += monthlyData.sum_of_one * monthlyData.quantity;
             }
         }
         return sumOfMonth;
     }
 
-    public MonthData maxMonth(boolean is_expense) {
+    public MonthlyData maxMonth(boolean is_expense) {
         double maxMonth = 0;
-        MonthData maxMonthdata = new MonthData();
-        for (MonthData monthData : monthDataArrayList) {
-            if (monthData.is_expense == is_expense) {
-                if (monthData.sum_of_one*monthData.quantity > maxMonth)  {
-                    maxMonth = monthData.sum_of_one*monthData.quantity;
-                    maxMonthdata.item_name = monthData.item_name;
+        MonthlyData maxMonthdata = new MonthlyData();
+        for (MonthlyData monthlyData : monthlyDataArrayList) {
+            if (monthlyData.is_expense == is_expense) {
+                if (monthlyData.sum_of_one* monthlyData.quantity > maxMonth)  {
+                    maxMonth = monthlyData.sum_of_one* monthlyData.quantity;
+                    maxMonthdata.item_name = monthlyData.item_name;
                     maxMonthdata.is_expense = is_expense;
-                    maxMonthdata.quantity = monthData.quantity;
-                    maxMonthdata.sum_of_one = monthData.sum_of_one;
+                    maxMonthdata.quantity = monthlyData.quantity;
+                    maxMonthdata.sum_of_one = monthlyData.sum_of_one;
                 }
             }
         }
@@ -57,16 +57,16 @@ public class MonthlyReport {
     }
 
     public void showMonthRep(String month) {
-        MonthData monthDataMaxIncome = new MonthData();
-        MonthData monthDataMaxExpense = new MonthData();
-        monthDataMaxIncome = maxMonth(false);
-        monthDataMaxExpense = maxMonth(true);
+        MonthlyData monthlyDataMaxIncome = new MonthlyData();
+        MonthlyData monthlyDataMaxExpense = new MonthlyData();
+        monthlyDataMaxIncome = maxMonth(false);
+        monthlyDataMaxExpense = maxMonth(true);
         Integer monthNum = Integer.parseInt(month);
         System.out.println("\nОтчет за " + FormatForReports.getMonthName(monthNum) + " " + year + " года.");
-        System.out.println("Самый прибыльный товар: " + monthDataMaxIncome.item_name +
-                           " на сумму " + FormatForReports.moneyFormat(monthDataMaxIncome.sum_of_one * monthDataMaxIncome.quantity) + ".");
-        System.out.println("Самая большая трата: " + monthDataMaxExpense.item_name +
-                " на сумму " + FormatForReports.moneyFormat(monthDataMaxExpense.sum_of_one * monthDataMaxExpense.quantity) + ".");
+        System.out.println("Самый прибыльный товар: " + monthlyDataMaxIncome.item_name +
+                           " на сумму " + FormatForReports.moneyFormat(monthlyDataMaxIncome.sum_of_one * monthlyDataMaxIncome.quantity) + ".");
+        System.out.println("Самая большая трата: " + monthlyDataMaxExpense.item_name +
+                " на сумму " + FormatForReports.moneyFormat(monthlyDataMaxExpense.sum_of_one * monthlyDataMaxExpense.quantity) + ".");
     }
 
 }

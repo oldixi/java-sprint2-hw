@@ -5,34 +5,34 @@ public class YearlyReport {
     ReadFile file;
     String year;
     Integer monthCont = 0;
-    ArrayList<YearData> yearDataArrayList = new ArrayList<>();
+    ArrayList<YearlyData> yearlyDataArrayList = new ArrayList<>();
 
     YearlyReport(ReadFile file) {
         this.file = file;
         year = file.path.substring(file.path.lastIndexOf('y') + 2, file.path.lastIndexOf('y') + 6);
     }
 
-    public ArrayList<YearData> parseYearData() {
+    public ArrayList<YearlyData> parseYearData() {
         List<String> yearList = file.readFileContents();
         String[] lineContents;
-        ArrayList<YearData> yearDataList = new ArrayList();
+        ArrayList<YearlyData> yearlyDataList = new ArrayList();
         for (int i = 1; i < yearList.size(); i++) {
-            YearData yearData = new YearData();
+            YearlyData yearlyData = new YearlyData();
             lineContents = yearList.get(i).split(",");
-            yearData.month = lineContents[0];
-            yearData.amount = Double.parseDouble(lineContents[1]);
-            yearData.is_expense = Boolean.parseBoolean(lineContents[2]);
-            yearDataList.add(yearData);
+            yearlyData.month = lineContents[0];
+            yearlyData.amount = Double.parseDouble(lineContents[1]);
+            yearlyData.is_expense = Boolean.parseBoolean(lineContents[2]);
+            yearlyDataList.add(yearlyData);
         }
         monthCont = yearList.size() / 2;
-        return yearDataList;
+        return yearlyDataList;
     }
 
     public double sumOfMonth(boolean is_expense, String month) {
         double sumOfMonth = 0;
-        for (YearData yearData : yearDataArrayList) {
-            if (yearData.is_expense == is_expense && yearData.month.equals(month)) {
-                sumOfMonth = yearData.amount;
+        for (YearlyData yearlyData : yearlyDataArrayList) {
+            if (yearlyData.is_expense == is_expense && yearlyData.month.equals(month)) {
+                sumOfMonth = yearlyData.amount;
             }
         }
         return sumOfMonth;
@@ -40,9 +40,9 @@ public class YearlyReport {
 
     public double avgOfYear(boolean is_expense) {
         double sumOfYear = 0;
-        for (YearData yearData : yearDataArrayList) {
-            if (yearData.is_expense == is_expense) {
-                sumOfYear += yearData.amount;
+        for (YearlyData yearlyData : yearlyDataArrayList) {
+            if (yearlyData.is_expense == is_expense) {
+                sumOfYear += yearlyData.amount;
             }
         }
         return sumOfYear / monthCont;
